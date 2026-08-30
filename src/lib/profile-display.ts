@@ -22,6 +22,16 @@ export {
 } from "./avatar-frames";
 import { normalizeAvatarFrame, type AvatarFrame } from "./avatar-frames";
 import { normalizeVisitEffect, type VisitEffect } from "./visit-effects";
+import { normalizeFavorites, type ProfileFavorite } from "./favorites";
+/** Favorieten (film, serie, boek, …) — definities leven in `@/lib/favorites`. */
+export type { ProfileFavorite, FavoriteKind } from "./favorites";
+export {
+  FAVORITE_KINDS,
+  FAVORITE_KIND_LABEL,
+  FAVORITE_KIND_EMOJI,
+  MAX_FAVORITES,
+  newFavoriteId,
+} from "./favorites";
 /** Bezoekers Special FX — definities leven in `@/lib/visit-effects`. */
 export type { VisitEffect } from "./visit-effects";
 export { VISIT_EFFECTS, runVisitEffect } from "./visit-effects";
@@ -64,6 +74,8 @@ export interface ProfileDisplayPrefs {
   showVcardButton: boolean;
   /** Entree-effect voor bezoekers (`none` = uit). */
   visitEffect: VisitEffect;
+  /** Favoriete films, series, boeken … met (eigen of opgehaalde) afbeelding. */
+  favorites: ProfileFavorite[];
 
 }
 
@@ -93,6 +105,7 @@ export const DEFAULT_DISPLAY_PREFS: ProfileDisplayPrefs = {
   bioFr: null,
   showVcardButton: true,
   visitEffect: "none",
+  favorites: [],
 };
 
 export { AVATAR_FRAME_DEFS as AVATAR_FRAMES } from "./avatar-frames";
@@ -198,6 +211,7 @@ export function parseDisplayPrefs(raw: unknown): ProfileDisplayPrefs {
     bioFr: textOrNull(r["bioFr"], 500),
     showVcardButton: r["showVcardButton"] === undefined ? true : Boolean(r["showVcardButton"]),
     visitEffect: normalizeVisitEffect(r["visitEffect"]),
+    favorites: normalizeFavorites(r["favorites"]),
   };
 }
 
