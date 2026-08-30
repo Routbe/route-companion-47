@@ -38,8 +38,6 @@ import {
   CartesianGrid,
 } from "recharts";
 import { Input } from "@/components/ui/input";
-import { DataExportCard } from "@/components/dashboard/DataExportCard";
-import { CustomDomainPanel } from "@/components/dashboard/CustomDomainPanel";
 import { VerifiedBadgeCard } from "@/components/dashboard/VerifiedBadgeCard";
 import { SocialSharingCard } from "@/components/dashboard/SocialSharingCard";
 import { Button } from "@/components/ui/button";
