@@ -369,40 +369,60 @@ export default function ProfileSettings() {
           </Panel>
 
           <Panel
-            title="Primary link"
-            hint="All four shapes always open your profile — pick the one ROUT shows and copies for you."
+            title="Kies je gebruikersnaam"
+            hint={
+              verified
+                ? "Je geverifieerde handle blijft herleidbaar naar je echte naam — kort of voluit, met . - _ of zonder."
+                : "Verifieer je account om een handle zonder cijfers te claimen die je echte naam draagt."
+            }
           >
             <div className="space-y-3">
-              <div className="grid gap-2 sm:grid-cols-2">
-                {URL_STYLES.map((option) => {
-                  const active = urlStyle === option;
-                  return (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => saveUrlStyle(option)}
-                      aria-pressed={active}
-                      className={cn(
-                        "flex items-center justify-between gap-2 border px-3 py-2.5 text-left transition-colors",
-                        active
-                          ? "border-foreground bg-accent text-accent-foreground"
-                          : "border-border bg-background hover:bg-muted",
-                      )}
-                    >
-                      <span className="truncate font-mono text-xs">
-                        {styledProfileLabel(normalizeHandle(form.username) || "handle", option)}
-                      </span>
-                      {active ? <Check className="h-4 w-4 shrink-0" /> : null}
-                    </button>
-                  );
-                })}
-              </div>
+              {nameOptions.length > 0 ? (
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {nameOptions.map((option) => {
+                    const active = normalizeHandle(form.username) === option;
+                    return (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => set("username", option)}
+                        aria-pressed={active}
+                        className={cn(
+                          "flex items-center justify-between gap-2 border px-3 py-2.5 text-left transition-colors",
+                          active
+                            ? "border-foreground bg-accent text-accent-foreground"
+                            : "border-border bg-background hover:bg-muted",
+                        )}
+                      >
+                        <span className="truncate font-mono text-xs">rout.be/{option}</span>
+                        {active ? <Check className="h-4 w-4 shrink-0" /> : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  Zodra je echte naam bekend is (na verificatie) stellen we hier passende
+                  gebruikersnamen voor.
+                </p>
+              )}
               <p className="text-xs text-muted-foreground">
-                Visitors can type it with or without <span className="font-mono">@</span> and with or
-                without <span className="font-mono">/u/</span> — never a 404.
+                Je <strong>weergavenaam</strong> mag je volledige naam zijn. Bezoekers die op je
+                blauwe vinkje klikken zien altijd je echte naam. Zowel{" "}
+                <span className="font-mono">rout.be/{normalizeHandle(form.username) || "handle"}</span>{" "}
+                als{" "}
+                <span className="font-mono">
+                  rout.be/u/{normalizeHandle(form.username) || "handle"}
+                </span>{" "}
+                openen hetzelfde profiel — daar hoef je niet tussen te kiezen.{" "}
+                <Link to="/verificatie" className="underline">
+                  Meer over verificatie
+                </Link>
+                .
               </p>
             </div>
           </Panel>
+
 
 
 
