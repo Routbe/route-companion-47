@@ -87,8 +87,12 @@ export function BunqConnectionPanel() {
     }
   };
 
+  // Tijdelijk inactief: koppelen staat uit tot de bunq-integratie opnieuw live gaat.
   return (
-    <section className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+    <section className="pointer-events-none rounded-2xl border border-border bg-card p-4 opacity-60 sm:p-5">
+      <p className="mb-2 inline-flex rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium">
+        Tijdelijk inactief
+      </p>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h2 className="flex items-center gap-2 text-sm font-medium">
