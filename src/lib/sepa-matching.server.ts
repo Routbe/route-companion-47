@@ -102,7 +102,51 @@ export async function matchInboundPayment(text: string): Promise<MatchOutcome> {
           reason: "already_paid",
         };
       }
-      await activate(payment, reference!, amountCents);
+      // De naam die de bank ons doorgeeft is leidend — niet wat het lid zelf
+      // invulde. Komt die niet overeen, dan activeren we niets en krijgt het
+      // lid een mail terwijl een mens de overschrijving nakijkt.
+      const payerName = extractPayerName(text);
+      const holderName = await accountHolderName(payment.user_id);
+      const nameMatch = payerName ? matchPayerName(payerName, holderName) : null;
+      if (nameMatch && nameMatch.verdict !== "strong") {
+        await dbAdmin
+          .from("verification_payments")
+          .update({ status: "processing" })
+          .eq("id", payment.id);
+        await queueSepaReview({
+          paymentId: payment.id,
+          userId: payment.user_id,
+          reference,
+          amountCents,
+          expectedCents: expected,
+          payerName,
+          holderName,
+          matchScore: nameMatch.score,
+          reason: "name_mismatch",
+        });
+        await notifyNameMismatch(payment, amountCents ?? expected, payerName);
+        await logReview(payment.user_id, reference, amountCents, expected, "name_mismatch");
+        await alertAdmin("name_mismatch", {
+          reference,
+          amountCents,
+          expected,
+          userId: payment.user_id,
+          payerName,
+          holderName,
+          score: nameMatch.score,
+        });
+        return {
+          level: 2,
+          reference,
+          amountCents,
+          paymentId: payment.id,
+          activated: false,
+          reason: "name_mismatch",
+          nameScore: nameMatch.score,
+        };
+      }
+
+      await activate(payment, reference!, amountCents, payerName);
       return {
         level: 1,
         reference,
@@ -292,12 +336,14 @@ async function accountHolderName(userId: string): Promise<string | null> {
     const { dbAdmin } = await import("@/lib/db/admin.server");
     const { data } = await dbAdmin
       .from("profiles")
-      .select("display_name, full_name" as "*")
+      .select("verified_legal_name, display_name, full_name" as "*")
       .eq("id", userId)
       .maybeSingle();
     const row = (data ?? null) as Record<string, unknown> | null;
     return (
-      ((row?.["display_name"] as string | null) ?? (row?.["full_name"] as string | null)) || null
+      ((row?.["verified_legal_name"] as string | null) ??
+        (row?.["display_name"] as string | null) ??
+        (row?.["full_name"] as string | null)) || null
     );
   } catch {
     return null;
@@ -330,7 +376,12 @@ async function notifyNameMismatch(
 }
 
 /** Level 1 settlement: money confirmed, badge and alias go live immediately. */
-async function activate(payment: PaymentRow, reference: string, amountCents: number | null) {
+async function activate(
+  payment: PaymentRow,
+  reference: string,
+  amountCents: number | null,
+  payerName?: string | null,
+) {
   const { dbAdmin } = await import("@/lib/db/admin.server");
 
   await dbAdmin
@@ -348,6 +399,9 @@ async function activate(payment: PaymentRow, reference: string, amountCents: num
       verified: true,
       status: "active",
       verified_at: new Date().toISOString(),
+      // De naam zoals de bank hem doorgaf is de bron van waarheid voor het
+      // blauwe vinkje; wat het lid zelf typte gebruiken we nooit als bewijs.
+      ...(payerName ? { verified_legal_name: payerName } : {}),
     })
     .eq("id", payment.user_id);
 

@@ -43,7 +43,9 @@ export function ProfileBadge({
     human ? "opacity-70" : "text-[#1d9bf0]"
   }`;
   const title = human ? "Menselijk geverifieerd account" : t("profile.verified_badge_title");
-  const shownName = human ? "" : formatBadgeName(legalName ?? "", nameFormat);
+  // Het blauwe vinkje toont bij het openklikken altijd de echte, volledige naam:
+  // de weergavenaam mag vrij zijn, de identiteit erachter niet.
+  const shownName = human ? "" : (legalName ?? "").trim() || formatBadgeName(legalName ?? "", nameFormat);
 
   return (
     <Popover>
