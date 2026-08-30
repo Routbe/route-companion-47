@@ -211,7 +211,8 @@ export function parseDisplayPrefs(raw: unknown): ProfileDisplayPrefs {
     bioNl: textOrNull(r["bioNl"], 500),
     bioEn: textOrNull(r["bioEn"], 500),
     bioFr: textOrNull(r["bioFr"], 500),
-    showVcardButton: r["showVcardButton"] === undefined ? true : Boolean(r["showVcardButton"]),
+    showVcardButton: Boolean(r["showVcardButton"]),
+    vcardLabel: textOrNull(r["vcardLabel"], 40),
     visitEffect: normalizeVisitEffect(r["visitEffect"]),
     favorites: normalizeFavorites(r["favorites"]),
   };
