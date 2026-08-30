@@ -601,17 +601,16 @@ export function ProfileEditor() {
     <div className={cn("flex flex-1 flex-col space-y-4", showSaveBar && "pb-16 lg:pb-4")}>
       {/* Compacte studiokop: tier-balk en tabs blijven bij het scrollen staan en
           nemen samen nauwelijks hoogte in, zodat de live preview hoger begint. */}
-      <div className="sticky top-14 z-20 -mx-1 space-y-1.5 bg-background/95 px-1 pb-1.5 pt-1 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-1.5">
+      <div className="sticky top-14 z-20 -mx-1 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-border bg-card/95 px-2 py-1 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <span
           className={cn(
-            "rounded-full px-2 py-0.5 text-[11px] font-medium",
+            "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium",
             verified ? "bg-primary/10" : "bg-muted",
           )}
         >
-          {verified ? "Pro tier" : "Free tier"}
+          {verified ? "Pro" : "Free"}
         </span>
-        <span className="min-w-0 break-all font-mono text-[12px] font-medium">
+        <span className="min-w-0 max-w-[45%] truncate font-mono text-[11px] font-medium">
           {host}
           {styledProfilePath(normalized || "handle", urlStyle)}
         </span>
@@ -620,38 +619,38 @@ export function ProfileEditor() {
             href={publicPath}
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-auto text-[11px] font-medium underline"
+            className="shrink-0 text-[10px] font-medium underline"
           >
-            View live →
+            Live →
           </a>
         )}
-      </div>
 
-      {/* Studio tabs */}
-      <div
-        role="tablist"
-        aria-label="Studio"
-        className="flex w-full gap-0.5 overflow-x-auto rounded-lg border border-border bg-card p-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {visibleTabs.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            role="tab"
-            type="button"
-            aria-selected={tab === id}
-            onClick={() => setTab(id)}
-            className={cn(
-              "flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-[11px] font-medium transition-colors",
-              tab === id
-                ? "bg-foreground text-background"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            <Icon className="h-3.5 w-3.5" aria-hidden />
-            <span className="whitespace-nowrap">{label}</span>
-          </button>
-        ))}
-      </div>
+        {/* Studio tabs — op dezelfde regel zodat de kop maar één balk hoog is. */}
+        <div
+          role="tablist"
+          aria-label="Studio"
+          className="ml-auto flex min-w-0 max-w-full gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {visibleTabs.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              role="tab"
+              type="button"
+              aria-selected={tab === id}
+              title={label}
+              onClick={() => setTab(id)}
+              className={cn(
+                "flex h-7 shrink-0 items-center gap-1 rounded-md px-2 text-[11px] font-medium transition-colors",
+                tab === id
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <Icon className="h-3.5 w-3.5" aria-hidden />
+              <span className="whitespace-nowrap">{label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
