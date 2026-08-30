@@ -105,7 +105,8 @@ export const DEFAULT_DISPLAY_PREFS: ProfileDisplayPrefs = {
   bioNl: null,
   bioEn: null,
   bioFr: null,
-  showVcardButton: true,
+  showVcardButton: false,
+  vcardLabel: null,
   visitEffect: "none",
   favorites: [],
 };
