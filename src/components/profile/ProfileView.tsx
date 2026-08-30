@@ -4,6 +4,7 @@ import { blockHref, isWidgetBlock, themeOf, type ProfileRecord } from "@/lib/pro
 import { BookingBlock, NewsletterBlock, isBookingUrl } from "@/components/profile/ProfileWidgets";
 import { SocialPlatformIcon } from "@/lib/social-icons";
 import { PLATFORM_LABEL, formatFollowers } from "@/lib/social-verify";
+import { FavoritesShowcase } from "@/components/profile/FavoritesShowcase";
 import { BadgeShowcase } from "@/components/profile/BadgeShowcase";
 import { VerifiedInfoDialog } from "@/components/profile/VerifiedInfoDialog";
 import { monthYear } from "@/components/profile/VerifiedBadgePopover";
@@ -261,6 +262,8 @@ export function ProfileView({
 
 
         <BadgeShowcase userId={profile.id} theme={t} />
+
+        <FavoritesShowcase favorites={prefs.favorites} theme={t} />
 
         {/* Geverifieerde socials met gecachte volgeraantallen (0 externe calls).
             Mode 1 = icoon + gebruikersnaam met vinkje ernaast; mode 2 = alleen
