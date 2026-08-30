@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { logQuietly, notifyError } from "@/lib/notify";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AdminVipPanel } from "@/components/admin/AdminVipPanel";
+import { AdminAccessPanel } from "@/components/admin/AdminAccessPanel";
 import { EmailFlowTester } from "@/components/admin/EmailFlowTester";
 import { DeliveryMonitorPanel } from "@/components/admin/DeliveryMonitorPanel";
 import { MemberStatusPanel } from "@/components/admin/MemberStatusPanel";
@@ -2564,6 +2565,7 @@ export default function Admin() {
 
           {/* ---------------------------------------------------------- */}
           <TabsContent value="members" className="space-y-3">
+            <AdminAccessPanel />
             <MemberStatusPanel />
           </TabsContent>
 
