@@ -72,6 +72,8 @@ export interface ProfileDisplayPrefs {
   bioFr: string | null;
   /** Toont de "Contact opslaan" (vCard) knop op het publieke profiel. */
   showVcardButton: boolean;
+  /** Eigen opschrift voor de contactknop (leeg = standaardtekst). */
+  vcardLabel: string | null;
   /** Entree-effect voor bezoekers (`none` = uit). */
   visitEffect: VisitEffect;
   /** Favoriete films, series, boeken … met (eigen of opgehaalde) afbeelding. */
