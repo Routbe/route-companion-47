@@ -12,8 +12,10 @@ import { db } from "@/lib/db/client";
 import { handleIssue, handleRuleHint, normalizeHandle } from "@/lib/profile";
 import { normalizeHandleForStorage } from "@/lib/handle-rules";
 import { useHandleAvailability } from "@/hooks/useHandleAvailability";
-import { URL_STYLES, styledProfileLabel, styledProfilePath, type UrlStyle } from "@/lib/profile-url";
+import { styledProfilePath } from "@/lib/profile-url";
 import { useUrlStyle } from "@/hooks/useUrlStyle";
+import { verifiedHandleSuggestions } from "@/lib/legal-name";
+
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
