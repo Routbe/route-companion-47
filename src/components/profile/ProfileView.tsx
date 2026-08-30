@@ -70,7 +70,12 @@ export function ProfileView({
   const banner = bannerStyleOf(prefs, t);
   const nameStyle = nameAccentStyle(prefs.nameAccent, t);
 
+  // Het blauwe vinkje hoort uitsluitend bij het geverifieerde account op de
+  // schone namespace (`rout.be/<handle>`). De aliasruimte (`rout.be/u/…`) van
+  // datzelfde geverifieerde lid toont het mens-symbool: bewijs dat dit account
+  // aan een geverifieerd, menselijk account gekoppeld is — zonder echte naam.
   const showBadge = Boolean(profile.verified) && prefs.badgeVisible;
+  const badgeType = free ? "human" : "verified";
   const showWatermark = shouldShowWatermark(Boolean(profile.verified), prefs);
   const wide = layout === "wide";
   const earlyBeliever = Boolean(profile.is_early_believer);
@@ -134,8 +139,8 @@ export function ProfileView({
           <span style={nameStyle}>{profile.display_name || `@${profile.username}`}</span>
           {showBadge && (
             <ProfileBadge
-              type={prefs.badgeType}
-              legalName={profile.verified_legal_name ?? profile.display_name ?? null}
+              type={badgeType}
+              legalName={free ? null : (profile.verified_legal_name ?? profile.display_name ?? null)}
               nameFormat={prefs.badgeNameFormat}
               verifiedAt={profile.verified_at ?? null}
               size={earlyBeliever ? "md" : "sm"}
