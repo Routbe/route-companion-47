@@ -114,13 +114,11 @@ export default function ProfileSettings() {
   const [ready, setReady] = useState(false);
   const [showcase, setShowcase] = useState<ShowcaseRow[]>([]);
   const [reserved, setReserved] = useState<ReservedRow[]>([]);
-  const { style: urlStyle, save: persistUrlStyle } = useUrlStyle();
+  const { style: urlStyle } = useUrlStyle();
 
-  async function saveUrlStyle(next: UrlStyle) {
-    const { error } = await persistUrlStyle(next);
-    if (error) toast.error(error.message);
-    else toast.success("Primary link updated");
-  }
+  /** Toegestane gebruikersnaam-vormen die herleidbaar blijven naar de echte naam. */
+  const nameOptions = useMemo(() => verifiedHandleSuggestions(legalName), [legalName]);
+
 
   useEffect(() => {
     if (!user) return;
