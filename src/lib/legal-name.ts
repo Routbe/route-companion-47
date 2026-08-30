@@ -72,3 +72,36 @@ export function handleMatchesLegalName(handle: string, legalName: string | null)
 
 export const IDENTITY_MISMATCH_MESSAGE =
   "Verified handles stay bound to your legal name — the handle must contain part of it.";
+
+/**
+ * Toegestane gebruikersnaam-varianten voor een geverifieerd lid.
+ *
+ * Een geverifieerde handle blijft altijd herleidbaar naar de wettelijke naam,
+ * maar de vorm is vrij: volledige naam, voornaam + initiaal achternaam,
+ * initiaal voornaam + achternaam — met `.`, `-`, `_` of niets ertussen.
+ */
+export function verifiedHandleSuggestions(legalName: string | null): string[] {
+  const tokens = legalNameTokens(legalName ?? "");
+  if (tokens.length < 2) return [];
+  const first = tokens[0]!;
+  const last = tokens[tokens.length - 1]!;
+  const separators = ["", ".", "-", "_"];
+  const pairs: [string, string][] = [
+    [first, last],
+    [first, last[0]!],
+    [first[0]!, last],
+  ];
+
+  const out: string[] = [];
+  for (const [a, b] of pairs) {
+    for (const sep of separators) {
+      const handle = `${a}${sep}${b}`;
+      if (handle.length < HANDLE_FLOOR) continue;
+      if (!out.includes(handle)) out.push(handle);
+    }
+  }
+  return out;
+}
+
+/** Platform-brede ondergrens; hier lokaal gehouden zodat dit bestand client-safe blijft. */
+const HANDLE_FLOOR = 5;
