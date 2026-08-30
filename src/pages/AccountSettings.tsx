@@ -22,6 +22,10 @@ import { AvatarUpload } from "@/components/settings/AvatarUpload";
 import { IdentitiesPanel } from "@/components/settings/IdentitiesPanel";
 import { FreezeAccountPanel } from "@/components/settings/FreezeAccountPanel";
 import { MergeAccountWizard } from "@/components/settings/MergeAccountWizard";
+import { BunqConnectionPanel } from "@/components/dashboard/BunqConnectionPanel";
+import { BillingHistoryPanel } from "@/components/dashboard/BillingHistoryPanel";
+import { DataExportCard } from "@/components/dashboard/DataExportCard";
+import { CustomDomainPanel } from "@/components/dashboard/CustomDomainPanel";
 
 import { Input } from "@/components/ui/input";
 import { PasswordField, isPasswordCompliant } from "@/components/PasswordField";
@@ -46,9 +50,16 @@ import { toast } from "sonner";
 import { LOCALES, LOCALE_LABELS, useI18n } from "@/lib/i18n";
 import { useLanguagePreference } from "@/hooks/useLanguagePreference";
 
-type SettingsTab = "profile" | "security" | "identities" | "status";
+type SettingsTab = "profile" | "security" | "identities" | "payments" | "data" | "status";
 
-const SETTINGS_TABS: SettingsTab[] = ["profile", "security", "identities", "status"];
+const SETTINGS_TABS: SettingsTab[] = [
+  "profile",
+  "security",
+  "identities",
+  "payments",
+  "data",
+  "status",
+];
 
 function parseTab(value: unknown): SettingsTab {
   return SETTINGS_TABS.includes(value as SettingsTab) ? (value as SettingsTab) : "profile";
@@ -270,7 +281,7 @@ export default function AccountSettings() {
       crumbs={[{ label: "Settings" }]}
     >
       <Tabs value={tab} onValueChange={(v) => setTab(parseTab(v))} className="mt-4">
-        <TabsList className="grid h-auto w-full grid-cols-2 gap-1 sm:grid-cols-4">
+        <TabsList className="grid h-auto w-full grid-cols-3 gap-1 sm:grid-cols-6">
           <TabsTrigger value="profile" className="h-9">
             {t("settings.tabs.profile")}
           </TabsTrigger>
@@ -280,10 +291,49 @@ export default function AccountSettings() {
           <TabsTrigger value="identities" className="h-9">
             {t("settings.tabs.identities")}
           </TabsTrigger>
+          <TabsTrigger value="payments" className="h-9">
+            Betalingen
+          </TabsTrigger>
+          <TabsTrigger value="data" className="h-9">
+            Data &amp; domein
+          </TabsTrigger>
           <TabsTrigger value="status" className="h-9">
             {t("settings.tabs.status")}
           </TabsTrigger>
         </TabsList>
+
+        {/* Betalingen & facturen */}
+        <TabsContent value="payments" className="space-y-4">
+          <section className="space-y-5 rounded-2xl border border-border bg-card p-4 sm:p-5">
+            <div>
+              <h2 className="text-lg font-medium">Betalingen &amp; facturen</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Download je facturen als PDF. Vragen over een betaling? Mail{" "}
+                <a className="underline" href="mailto:billing@rout.be">
+                  billing@rout.be
+                </a>{" "}
+                of gebruik het{" "}
+                <Link to="/contact" className="underline">
+                  contactformulier
+                </Link>
+                .
+              </p>
+            </div>
+            <BillingHistoryPanel />
+            <div className="h-px bg-border" />
+            <BunqConnectionPanel />
+          </section>
+        </TabsContent>
+
+        {/* Data & domein */}
+        <TabsContent value="data" className="space-y-4">
+          <section className="space-y-5 rounded-2xl border border-border bg-card p-4 sm:p-5">
+            <h2 className="text-lg font-medium">Data &amp; domein</h2>
+            <DataExportCard />
+            <div className="h-px bg-border" />
+            <CustomDomainPanel />
+          </section>
+        </TabsContent>
 
         {/* Tab 1 — Profile */}
         <TabsContent value="profile" className="space-y-4">
