@@ -912,7 +912,6 @@ export function ProfileEditor() {
             <Accordion
               type="single"
               collapsible
-              defaultValue="avatar_header"
               className="space-y-3"
             >
               {/* 1 — Avatar, header & kaders */}
@@ -1683,7 +1682,7 @@ export function ProfileEditor() {
 
         
         {/* Live preview — desktop: pinned next to the editor, altijd ónder de vaste header (z-10 < z-50) */}
-        <aside className="z-10 hidden lg:sticky lg:top-32 lg:block lg:h-[calc(100vh-9rem)] lg:overflow-y-auto lg:overscroll-contain">
+        <aside className="z-10 hidden lg:sticky lg:top-24 lg:block lg:h-[calc(100vh-7rem)] lg:overflow-hidden">
 
           <div className="mb-2 flex items-center justify-between gap-2">
             <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
