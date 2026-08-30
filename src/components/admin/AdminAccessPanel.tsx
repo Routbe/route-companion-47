@@ -11,6 +11,7 @@ import {
   grantAdminPermission,
   listAdminAccess,
   setLegalName,
+  setUserVerifiedStatus,
 } from "@/lib/admin-access.functions";
 
 type Grant = Awaited<ReturnType<typeof listAdminAccess>>[number];
@@ -115,6 +116,24 @@ export function AdminAccessPanel() {
       await openUser(insight.userId);
     } catch (error) {
       notifyError(error instanceof Error ? error.message : "Opslaan mislukt");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const toggleVerified = async (verified: boolean) => {
+    if (!insight) return;
+    setBusy(true);
+    try {
+      const result = await setUserVerifiedStatus({ data: { userId: insight.userId, verified } });
+      if (!result.ok) {
+        notifyError(result.error);
+        return;
+      }
+      notifySuccess(verified ? "Blauw vinkje toegekend." : "Verificatie ingetrokken.");
+      await openUser(insight.userId);
+    } catch (error) {
+      notifyError(error instanceof Error ? error.message : "Verifiëren mislukt");
     } finally {
       setBusy(false);
     }
@@ -302,6 +321,24 @@ export function AdminAccessPanel() {
           <Button type="button" className="h-9" onClick={() => void saveName()} disabled={busy}>
             Naam & gebruikersnaam opslaan
           </Button>
+
+          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border p-3">
+            <ShieldCheck className="h-4 w-4" aria-hidden />
+            <span className="text-sm">
+              {insight.verified
+                ? "Geverifieerd account — blauw vinkje op rout.be/" + (insight.username ?? "")
+                : "Niet geverifieerd — alias-profiel zonder blauw vinkje"}
+            </span>
+            <Button
+              type="button"
+              variant={insight.verified ? "outline" : "default"}
+              className="ml-auto h-9"
+              disabled={busy}
+              onClick={() => void toggleVerified(!insight.verified)}
+            >
+              {insight.verified ? "Verificatie intrekken" : "Verifiëren"}
+            </Button>
+          </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1 text-sm">
