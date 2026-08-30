@@ -81,6 +81,27 @@ export async function writeStudioProfile(userId: string, input: StudioProfileInp
   if (!username) throw new Error("handle_invalid");
   if (isReservedHandle(username)) throw new Error("handle_reserved");
 
+  // Admin-ingestelde blokkades: alleen actief wanneer de waarde echt wijzigt.
+  const { isFeatureBlocked } = await import("./admin-access.server");
+  const currentRows = (await sql`
+    select username, display_name from public.profiles where id = ${userId} limit 1
+  `) as Row[];
+  const current = currentRows[0];
+  if (current) {
+    if (
+      (current["username"] as string | null) !== username &&
+      (await isFeatureBlocked(userId, "handle_change"))
+    ) {
+      throw new Error("handle_change_blocked");
+    }
+    if (
+      (current["display_name"] as string | null) !== (input.displayName ?? null) &&
+      (await isFeatureBlocked(userId, "name_change"))
+    ) {
+      throw new Error("name_change_blocked");
+    }
+  }
+
   const taken = (await sql`
     select id from public.profiles where username = ${username} and id <> ${userId} limit 1
   `) as Row[];

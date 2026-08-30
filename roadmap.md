@@ -12,3 +12,13 @@
 - [x] Studio sticky/z-index fix + laptop chassis mockup + iframe scrollbars
 - [x] Tests claim-root (401, rate limit, 409, audit insert)
 - [x] Veiligheidscheck + tsgo
+
+## Adminportaal (nieuw)
+- [x] db/28: admin_permissions, user_feature_blocks, legal_first_name/legal_last_name
+- [x] Deelrechten (verifiëren, namen, promo's, toestel-data, blokkades, admins)
+- [x] Admin kan voornaam/achternaam invullen + gebruikersnaam voornaam.achternaam
+- [x] Locatie/toestel/gekoppelde accounts per gebruiker zichtbaar
+- [x] Functies blokkeren (tijdelijk of permanent) + handhaving bij profiel opslaan
+- [x] Promo-sms: mobiel opent berichten-app, desktop toont QR
+- [ ] Cadeaubonnen (koop, factuur, PDF, 3D, gratis fysieke levering BE)
+- [ ] Promomail-bezorging verifiëren in productie (Brevo)

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { notifyError, notifySuccess } from "@/lib/notify";
+import { QRCodeSVG } from "qrcode.react";
 import { createPromoCode, listPromos } from "@/lib/promo-admin.functions";
 
 type PromoRow = Awaited<ReturnType<typeof listPromos>>[number];
@@ -46,6 +47,7 @@ export function PromoInvitePanel() {
   const [confirmation, setConfirmation] = useState<string | null>(null);
   const [lastCode, setLastCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [smsQr, setSmsQr] = useState<{ url: string; code: string } | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -123,7 +125,18 @@ export function PromoInvitePanel() {
     if (!value) return;
     const body = t("admin.promo.sms_body", { code: value });
     const number = phone.replace(/[^\d+]/g, "");
-    window.location.href = `sms:${number}?&body=${encodeURIComponent(body)}`;
+    // iOS wil `&body=`, Android `?body=` — beide accepteren `?&body=`.
+    const url = `sms:${number}?&body=${encodeURIComponent(body)}`;
+    const isHandheld =
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+    if (isHandheld) {
+      // Opent de berichten-app met nummer én tekst al ingevuld.
+      window.location.href = url;
+      return;
+    }
+    // Op desktop is er geen berichten-app: toon een QR om met de telefoon te scannen.
+    setSmsQr({ url, code: value });
   };
 
   return (
@@ -327,6 +340,21 @@ export function PromoInvitePanel() {
           <MessageSquare className="mr-2 h-4 w-4" aria-hidden />
           {t("admin.promo.sms")}
         </Button>
+        {smsQr ? (
+          <div className="flex items-center gap-3 rounded-xl border border-border bg-background p-3">
+            <QRCodeSVG value={smsQr.url} size={104} includeMargin />
+            <div className="space-y-1 text-xs">
+              <p className="font-medium">Scan met je telefoon</p>
+              <p className="text-muted-foreground">
+                Je berichten-app opent met {phone.trim()} en code{" "}
+                <span className="font-mono">{smsQr.code}</span>.
+              </p>
+              <Button type="button" size="sm" variant="ghost" onClick={() => setSmsQr(null)}>
+                Sluiten
+              </Button>
+            </div>
+          </div>
+        ) : null}
         {confirmation ? (
           <p
             data-testid="promo-confirmation"
