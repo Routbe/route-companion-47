@@ -108,6 +108,8 @@ import { avatarFrameLabel } from "@/lib/avatar-frames";
 import { ProfileView } from "@/components/profile/ProfileView";
 import { VerificationPanel } from "@/components/dashboard/VerificationPanel";
 import { DonationPanel } from "@/components/dashboard/DonationPanel";
+import { BunqConnectionPanel } from "@/components/dashboard/BunqConnectionPanel";
+import { BillingHistoryPanel } from "@/components/dashboard/BillingHistoryPanel";
 import {
   checkStudioHandle,
   getStudioAnalytics,
@@ -1422,6 +1424,13 @@ export function ProfileEditor() {
 
           {tab === "settings" && (
             <>
+              <section className="space-y-5 rounded-2xl border border-border bg-card p-4 sm:p-5">
+                <h2 className="text-lg font-medium">Betalingen &amp; facturen</h2>
+                <BunqConnectionPanel />
+                <div className="h-px bg-border" />
+                <BillingHistoryPanel />
+              </section>
+
               <section className="space-y-5 rounded-2xl border border-border bg-card p-4 sm:p-5">
                 <h2 className="text-lg font-medium">Data & domein</h2>
                 <DataExportCard />

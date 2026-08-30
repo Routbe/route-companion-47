@@ -25,8 +25,6 @@ import { QrsPanel } from "@/components/dashboard/QrsPanel";
 import { IdentityCard } from "@/components/dashboard/IdentityCard";
 import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
 import { BadgeActivityPanel } from "@/components/dashboard/BadgeActivityPanel";
-import { BunqConnectionPanel } from "@/components/dashboard/BunqConnectionPanel";
-import { BillingHistoryPanel } from "@/components/dashboard/BillingHistoryPanel";
 import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/lib/i18n";
 import { formatDate } from "@/lib/format";
@@ -364,8 +362,6 @@ export default function Dashboard() {
 
       <div className="mb-4 space-y-4">
         <NotificationsPanel />
-        <BunqConnectionPanel />
-        <BillingHistoryPanel />
         <BadgeActivityPanel />
       </div>
 
