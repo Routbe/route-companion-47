@@ -415,7 +415,7 @@ export default function ProfileSettings() {
                   rout.be/u/{normalizeHandle(form.username) || "handle"}
                 </span>{" "}
                 openen hetzelfde profiel — daar hoef je niet tussen te kiezen.{" "}
-                <Link to="/verificatie" className="underline">
+                <Link to="/verify" className="underline">
                   Meer over verificatie
                 </Link>
                 .
