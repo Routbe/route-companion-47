@@ -108,8 +108,6 @@ import { avatarFrameLabel } from "@/lib/avatar-frames";
 import { ProfileView } from "@/components/profile/ProfileView";
 import { VerificationPanel } from "@/components/dashboard/VerificationPanel";
 import { DonationPanel } from "@/components/dashboard/DonationPanel";
-import { BunqConnectionPanel } from "@/components/dashboard/BunqConnectionPanel";
-import { BillingHistoryPanel } from "@/components/dashboard/BillingHistoryPanel";
 import {
   checkStudioHandle,
   getStudioAnalytics,
@@ -1422,18 +1420,26 @@ export function ProfileEditor() {
 
           {tab === "settings" && (
             <>
-              <section className="space-y-5 rounded-2xl border border-border bg-card p-4 sm:p-5">
-                <h2 className="text-lg font-medium">Betalingen &amp; facturen</h2>
-                <BunqConnectionPanel />
-                <div className="h-px bg-border" />
-                <BillingHistoryPanel />
-              </section>
-
-              <section className="space-y-5 rounded-2xl border border-border bg-card p-4 sm:p-5">
-                <h2 className="text-lg font-medium">Data & domein</h2>
-                <DataExportCard />
-                <div className="h-px bg-border" />
-                <CustomDomainPanel />
+              <section className="space-y-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
+                <h2 className="text-lg font-medium">Betalingen, data &amp; domein</h2>
+                <p className="text-sm text-muted-foreground">
+                  Facturen, betaalmethodes, data-export en je eigen domein staan nu bij je
+                  accountinstellingen.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href="/settings?tab=payments"
+                    className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted"
+                  >
+                    Betalingen &amp; facturen →
+                  </a>
+                  <a
+                    href="/settings?tab=data"
+                    className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted"
+                  >
+                    Data &amp; domein →
+                  </a>
+                </div>
                 <div className="h-px bg-border" />
                 <VerifiedBadgeCard verified={verified} handle={handle || null} />
               </section>
