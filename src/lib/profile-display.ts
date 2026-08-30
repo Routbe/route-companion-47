@@ -72,6 +72,8 @@ export interface ProfileDisplayPrefs {
   bioFr: string | null;
   /** Toont de "Contact opslaan" (vCard) knop op het publieke profiel. */
   showVcardButton: boolean;
+  /** Eigen opschrift voor de contactknop (leeg = standaardtekst). */
+  vcardLabel: string | null;
   /** Entree-effect voor bezoekers (`none` = uit). */
   visitEffect: VisitEffect;
   /** Favoriete films, series, boeken … met (eigen of opgehaalde) afbeelding. */
@@ -103,7 +105,8 @@ export const DEFAULT_DISPLAY_PREFS: ProfileDisplayPrefs = {
   bioNl: null,
   bioEn: null,
   bioFr: null,
-  showVcardButton: true,
+  showVcardButton: false,
+  vcardLabel: null,
   visitEffect: "none",
   favorites: [],
 };
@@ -209,7 +212,8 @@ export function parseDisplayPrefs(raw: unknown): ProfileDisplayPrefs {
     bioNl: textOrNull(r["bioNl"], 500),
     bioEn: textOrNull(r["bioEn"], 500),
     bioFr: textOrNull(r["bioFr"], 500),
-    showVcardButton: r["showVcardButton"] === undefined ? true : Boolean(r["showVcardButton"]),
+    showVcardButton: Boolean(r["showVcardButton"]),
+    vcardLabel: textOrNull(r["vcardLabel"], 40),
     visitEffect: normalizeVisitEffect(r["visitEffect"]),
     favorites: normalizeFavorites(r["favorites"]),
   };

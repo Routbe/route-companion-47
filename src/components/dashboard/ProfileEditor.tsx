@@ -38,8 +38,6 @@ import {
   CartesianGrid,
 } from "recharts";
 import { Input } from "@/components/ui/input";
-import { DataExportCard } from "@/components/dashboard/DataExportCard";
-import { CustomDomainPanel } from "@/components/dashboard/CustomDomainPanel";
 import { VerifiedBadgeCard } from "@/components/dashboard/VerifiedBadgeCard";
 import { SocialSharingCard } from "@/components/dashboard/SocialSharingCard";
 import { Button } from "@/components/ui/button";
@@ -108,8 +106,6 @@ import { avatarFrameLabel } from "@/lib/avatar-frames";
 import { ProfileView } from "@/components/profile/ProfileView";
 import { VerificationPanel } from "@/components/dashboard/VerificationPanel";
 import { DonationPanel } from "@/components/dashboard/DonationPanel";
-import { BunqConnectionPanel } from "@/components/dashboard/BunqConnectionPanel";
-import { BillingHistoryPanel } from "@/components/dashboard/BillingHistoryPanel";
 import {
   checkStudioHandle,
   getStudioAnalytics,
@@ -601,17 +597,16 @@ export function ProfileEditor() {
     <div className={cn("flex flex-1 flex-col space-y-4", showSaveBar && "pb-16 lg:pb-4")}>
       {/* Compacte studiokop: tier-balk en tabs blijven bij het scrollen staan en
           nemen samen nauwelijks hoogte in, zodat de live preview hoger begint. */}
-      <div className="sticky top-14 z-20 -mx-1 space-y-1.5 bg-background/95 px-1 pb-1.5 pt-1 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-1.5">
+      <div className="sticky top-14 z-20 -mx-1 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-border bg-card/95 px-2 py-1 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <span
           className={cn(
-            "rounded-full px-2 py-0.5 text-[11px] font-medium",
+            "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium",
             verified ? "bg-primary/10" : "bg-muted",
           )}
         >
-          {verified ? "Pro tier" : "Free tier"}
+          {verified ? "Pro" : "Free"}
         </span>
-        <span className="min-w-0 break-all font-mono text-[12px] font-medium">
+        <span className="min-w-0 max-w-[45%] truncate font-mono text-[11px] font-medium">
           {host}
           {styledProfilePath(normalized || "handle", urlStyle)}
         </span>
@@ -620,38 +615,38 @@ export function ProfileEditor() {
             href={publicPath}
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-auto text-[11px] font-medium underline"
+            className="shrink-0 text-[10px] font-medium underline"
           >
-            View live →
+            Live →
           </a>
         )}
-      </div>
 
-      {/* Studio tabs */}
-      <div
-        role="tablist"
-        aria-label="Studio"
-        className="flex w-full gap-0.5 overflow-x-auto rounded-lg border border-border bg-card p-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {visibleTabs.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            role="tab"
-            type="button"
-            aria-selected={tab === id}
-            onClick={() => setTab(id)}
-            className={cn(
-              "flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-[11px] font-medium transition-colors",
-              tab === id
-                ? "bg-foreground text-background"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            <Icon className="h-3.5 w-3.5" aria-hidden />
-            <span className="whitespace-nowrap">{label}</span>
-          </button>
-        ))}
-      </div>
+        {/* Studio tabs — op dezelfde regel zodat de kop maar één balk hoog is. */}
+        <div
+          role="tablist"
+          aria-label="Studio"
+          className="ml-auto flex min-w-0 max-w-full gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {visibleTabs.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              role="tab"
+              type="button"
+              aria-selected={tab === id}
+              title={label}
+              onClick={() => setTab(id)}
+              className={cn(
+                "flex h-7 shrink-0 items-center gap-1 rounded-md px-2 text-[11px] font-medium transition-colors",
+                tab === id
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <Icon className="h-3.5 w-3.5" aria-hidden />
+              <span className="whitespace-nowrap">{label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -913,7 +908,6 @@ export function ProfileEditor() {
             <Accordion
               type="single"
               collapsible
-              defaultValue="avatar_header"
               className="space-y-3"
             >
               {/* 1 — Avatar, header & kaders */}
@@ -1424,18 +1418,26 @@ export function ProfileEditor() {
 
           {tab === "settings" && (
             <>
-              <section className="space-y-5 rounded-2xl border border-border bg-card p-4 sm:p-5">
-                <h2 className="text-lg font-medium">Betalingen &amp; facturen</h2>
-                <BunqConnectionPanel />
-                <div className="h-px bg-border" />
-                <BillingHistoryPanel />
-              </section>
-
-              <section className="space-y-5 rounded-2xl border border-border bg-card p-4 sm:p-5">
-                <h2 className="text-lg font-medium">Data & domein</h2>
-                <DataExportCard />
-                <div className="h-px bg-border" />
-                <CustomDomainPanel />
+              <section className="space-y-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
+                <h2 className="text-lg font-medium">Betalingen, data &amp; domein</h2>
+                <p className="text-sm text-muted-foreground">
+                  Facturen, betaalmethodes, data-export en je eigen domein staan nu bij je
+                  accountinstellingen.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href="/settings?tab=payments"
+                    className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted"
+                  >
+                    Betalingen &amp; facturen →
+                  </a>
+                  <a
+                    href="/settings?tab=data"
+                    className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted"
+                  >
+                    Data &amp; domein →
+                  </a>
+                </div>
                 <div className="h-px bg-border" />
                 <VerifiedBadgeCard verified={verified} handle={handle || null} />
               </section>
@@ -1684,7 +1686,7 @@ export function ProfileEditor() {
 
         
         {/* Live preview — desktop: pinned next to the editor, altijd ónder de vaste header (z-10 < z-50) */}
-        <aside className="z-10 hidden lg:sticky lg:top-32 lg:block lg:h-[calc(100vh-9rem)] lg:overflow-y-auto lg:overscroll-contain">
+        <aside className="z-10 hidden lg:sticky lg:top-24 lg:block lg:h-[calc(100vh-7rem)] lg:overflow-hidden">
 
           <div className="mb-2 flex items-center justify-between gap-2">
             <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">

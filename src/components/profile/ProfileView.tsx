@@ -253,10 +253,16 @@ export function ProfileView({
                 .map((b) => ({ label: b.kind, url: blockHref(b) })),
             })
           }
-          className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80"
+          className="group mt-3 inline-flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-4 text-xs font-medium shadow-sm transition-all hover:-translate-y-px hover:shadow-md"
           style={{ border: `1px solid ${t.border}`, color: t.text }}
         >
-          <UserPlus className="h-3.5 w-3.5" aria-hidden /> Contact opslaan
+          <span
+            className="flex h-6 w-6 items-center justify-center rounded-full transition-transform group-hover:scale-105"
+            style={{ backgroundColor: t.border, color: t.text }}
+          >
+            <UserPlus className="h-3.5 w-3.5" aria-hidden />
+          </span>
+          {prefs.vcardLabel?.trim() || "Contact opslaan"}
         </button>
         )}
 
