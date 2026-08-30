@@ -302,7 +302,7 @@ export const BADGE_VERIFIED_BODY =
   "Officieel geverifieerd lid. Identiteit en accountstatus zijn succesvol gevalideerd via ROUT.";
 
 export const BADGE_HUMAN_BODY =
-  "Menselijk account, geverifieerd door ROUT. Deze persoon koos ervoor haar of zijn wettelijke identiteit privé te houden.";
+  "Dit account is gekoppeld aan een geverifieerd ROUT-account: een bevestigde mens. De wettelijke naam blijft hier privé — die staat enkel bij het blauwe vinkje op het geverifieerde profiel.";
 
 /** CSS-achtergrondlagen voor het gekozen patroon, bovenop de themakleur. */
 export function backgroundLayers(

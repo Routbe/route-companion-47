@@ -348,3 +348,55 @@ export async function setFeatureBlock(opts: {
   });
   return { ok: true as const };
 }
+
+/**
+ * Verificatie in- of uitschakelen vanuit het adminportaal.
+ *
+ * Een geverifieerd account is het account op de schone namespace
+ * (`rout.be/<handle>`) met het blauwe vinkje; de aliasruimte (`rout.be/u/…`)
+ * toont daarna enkel het mens-symbool. Verifiëren kan pas wanneer de
+ * wettelijke naam bekend is, want die naam zit achter het blauwe vinkje.
+ */
+export async function setUserVerified(opts: {
+  adminId: string;
+  userId: string;
+  verified: boolean;
+}) {
+  const rows = (await sql`
+    select verified_legal_name, legal_first_name, legal_last_name, username
+      from public.profiles where id = ${opts.userId} limit 1
+  `) as Row[];
+  const row = rows[0];
+  if (!row) return { ok: false as const, error: "Gebruiker niet gevonden." };
+
+  const legalName =
+    ((row["verified_legal_name"] as string | null) ?? "").trim() ||
+    `${(row["legal_first_name"] as string | null) ?? ""} ${(row["legal_last_name"] as string | null) ?? ""}`.trim();
+
+  if (opts.verified && legalName.split(" ").filter(Boolean).length < 2) {
+    return {
+      ok: false as const,
+      error: "Vul eerst de wettelijke voor- en achternaam in — die hoort bij het blauwe vinkje.",
+    };
+  }
+
+  await sql`
+    update public.profiles
+       set verified = ${opts.verified},
+           verified_at = ${opts.verified ? new Date().toISOString() : null},
+           verified_legal_name = ${opts.verified ? legalName : (row["verified_legal_name"] as string | null) ?? null},
+           status = case when ${opts.verified} then 'active' else status end,
+           updated_at = now()
+     where id = ${opts.userId}
+  `;
+
+  await writeAudit({
+    adminId: opts.adminId,
+    action: opts.verified ? "user_verified" : "user_unverified",
+    targetUserId: opts.userId,
+    targetLabel: (row["username"] as string | null) ?? null,
+    notes: legalName || null,
+  });
+
+  return { ok: true as const, verified: opts.verified, legalName };
+}

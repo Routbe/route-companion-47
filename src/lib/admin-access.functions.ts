@@ -97,3 +97,15 @@ export const blockUserFeature = createServerFn({ method: "POST" })
     await assertAdminPermission(context.userId, "block_features");
     return setFeatureBlock({ adminId: context.userId, ...data });
   });
+
+/** Blauw vinkje toekennen of intrekken (permissie: verify_users). */
+export const setUserVerifiedStatus = createServerFn({ method: "POST" })
+  .middleware([requireAuth])
+  .inputValidator((data: unknown) =>
+    z.object({ userId: z.string().uuid(), verified: z.boolean() }).parse(data),
+  )
+  .handler(async ({ data, context }) => {
+    const { assertAdminPermission, setUserVerified } = await import("./admin-access.server");
+    await assertAdminPermission(context.userId, "verify_users");
+    return setUserVerified({ adminId: context.userId, ...data });
+  });

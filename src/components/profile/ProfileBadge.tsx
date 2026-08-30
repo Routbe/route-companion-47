@@ -1,4 +1,5 @@
-import { BadgeCheck, ShieldCheck } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
+import { HumanLinkedIcon } from "@/components/profile/HumanLinkedIcon";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { monthYear } from "@/components/profile/VerifiedBadgePopover";
 import { useI18n } from "@/lib/i18n";
@@ -38,11 +39,13 @@ export function ProfileBadge({
   const { t, locale } = useI18n();
   const on = monthYear(verifiedAt, locale || "nl");
   const human = type === "human";
-  const Icon = human ? ShieldCheck : BadgeCheck;
+  const Icon = human ? HumanLinkedIcon : BadgeCheck;
   const iconClass = `${size === "md" ? "h-6 w-6" : "h-5 w-5"} ${
-    human ? "opacity-70" : "text-[#1d9bf0]"
+    human ? "opacity-80" : "text-[#1d9bf0]"
   }`;
-  const title = human ? "Menselijk geverifieerd account" : t("profile.verified_badge_title");
+  const title = human
+    ? "Gekoppeld aan een geverifieerd account"
+    : t("profile.verified_badge_title");
   // Het blauwe vinkje toont bij het openklikken altijd de echte, volledige naam:
   // de weergavenaam mag vrij zijn, de identiteit erachter niet.
   const shownName = human ? "" : (legalName ?? "").trim() || formatBadgeName(legalName ?? "", nameFormat);
